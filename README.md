@@ -30,22 +30,34 @@ CI 会检查：
 - PR 内容清晰、可读
 - 不引入功能回归（pytest 通过）
 
-## 四、如何本地运行（建议）
-> 建议使用 Python 3.11
+## 四、本地运行建议
+1、创建环境（建议使用 Python 3.11）
 
 ```bash
 conda create --name myenv python=3.11 -y
 conda activate myenv
 
+2、从 main 拉出分支：
+
+git checkout -b fix/pep8
+修改 src/bad_style.py（或题目指定文件），修复规范问题但不改行为
+
 pip install -r requirements.txt
 
-# 运行测试
+3、运行测试
 python -m pytest -q tests/
 
 # 运行静态检查（与 CI 一致）
 ruff check .
 black --check .
 isort --check-only .
+
+4、推送并创建 PR：
+git add .
+git commit -m "fix: pep8 refactor"
+git push -u origin fix/pep8
+PR 页面等待 GitHub Actions 执行，看到 grading-ci / grade (lint + format + tests) 为绿色即通过。
+
 ```
 
 ## 五、评分建议
