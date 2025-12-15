@@ -48,7 +48,7 @@ black --check .
 isort --check-only .
 ```
 
-## 五、评分建议（供评审使用，不要求候选人执行）
+## 五、评分建议
 - 60%：CI 是否通过（ruff/black/isort/pytest）
 - 20%：代码可读性（命名、函数长度、注释与 docstring 是否合理）
 - 20%：GitHub 流程规范（分支、提交粒度、PR 描述）
