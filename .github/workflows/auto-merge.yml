@@ -16,18 +16,18 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     # Only run on PRs not from forks
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.repo.fork == false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Wait for checks to complete
-        uses: lewagon/wait-on-check-action@v1.3.4
+        uses: lewagon/wait-on-check-action@e106e5c43604e1c5e060911e0e81e39179bf6189  # v1.3.4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           repo-token: ${{ github.token }}
           wait-interval: 10
-          running-workflow-name: 'auto-merge'
+          running-workflow-name: 'Auto Merge PR'
           allowed-conclusions: success
 
       - name: Auto-merge PR
@@ -66,8 +66,6 @@ jobs:
           gh pr merge "$PR_NUMBER" \
             --squash \
             --auto \
-            --delete-branch \
-            --subject "feat: PEP 8 code improvements (PR #$PR_NUMBER)" \
-            --body "Automatically merged after all checks passed ✅"
+            --delete-branch
           
           echo "✅ PR #$PR_NUMBER merged successfully!"

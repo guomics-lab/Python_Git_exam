@@ -44,14 +44,14 @@ jobs:
         run: |
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           
-          # Create PR title and body
-          PR_TITLE="Fix: PEP 8 code style improvements from $BRANCH_NAME"
+          # Create PR title from branch name
+          PR_TITLE="代码改进: $BRANCH_NAME"
           PR_BODY="## 自动创建的 Pull Request
 
 此 PR 由 GitHub Actions 自动创建。
 
 ### 任务说明
-修复 \`src/bad_style.py\` 中的 PEP 8 代码规范问题。
+修复代码规范问题。
 
 ### 检查项
 - [ ] Ruff (代码质量检查)
