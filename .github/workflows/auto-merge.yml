@@ -1,0 +1,73 @@
+name: Auto Merge PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  check_suite:
+    types: [completed]
+  status: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    # Only run on PRs not from forks
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for checks to complete
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          repo-token: ${{ github.token }}
+          wait-interval: 10
+          running-workflow-name: 'auto-merge'
+          allowed-conclusions: success
+
+      - name: Auto-merge PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR number found, skipping auto-merge"
+            exit 0
+          fi
+          
+          # Check if all required checks have passed
+          echo "Checking status of PR #$PR_NUMBER..."
+          
+          # Get PR details
+          PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq '.state')
+          
+          if [ "$PR_STATE" != "OPEN" ]; then
+            echo "PR is not open (state: $PR_STATE), skipping"
+            exit 0
+          fi
+          
+          # Check if PR is mergeable
+          MERGEABLE=$(gh pr view "$PR_NUMBER" --json mergeable --jq '.mergeable')
+          
+          if [ "$MERGEABLE" != "MERGEABLE" ]; then
+            echo "PR is not mergeable (status: $MERGEABLE), skipping"
+            exit 0
+          fi
+          
+          echo "✅ All checks passed! Merging PR #$PR_NUMBER..."
+          
+          # Merge the PR with squash
+          gh pr merge "$PR_NUMBER" \
+            --squash \
+            --auto \
+            --delete-branch \
+            --subject "feat: PEP 8 code improvements (PR #$PR_NUMBER)" \
+            --body "Automatically merged after all checks passed ✅"
+          
+          echo "✅ PR #$PR_NUMBER merged successfully!"
