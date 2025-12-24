@@ -1,0 +1,77 @@
+name: Auto Create PR
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Branch name: $BRANCH_NAME"
+          
+          # Check if a PR already exists for this branch
+          PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --state open --json number --jq 'length')
+          
+          if [ "$PR_EXISTS" -gt 0 ]; then
+            echo "pr_exists=true" >> $GITHUB_OUTPUT
+            echo "PR already exists for branch $BRANCH_NAME"
+          else
+            echo "pr_exists=false" >> $GITHUB_OUTPUT
+            echo "No PR exists for branch $BRANCH_NAME"
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-pr.outputs.pr_exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          
+          # Create PR title from branch name
+          PR_TITLE="代码改进: $BRANCH_NAME"
+          PR_BODY="## 自动创建的 Pull Request
+
+此 PR 由 GitHub Actions 自动创建。
+
+### 任务说明
+修复代码规范问题。
+
+### 检查项
+- [ ] Ruff (代码质量检查)
+- [ ] Black (代码格式化检查)
+- [ ] isort (导入排序检查)
+- [ ] Pytest (单元测试)
+
+### 通过标准
+当所有检查项都通过（绿色 ✅）时，即可手动合并到主分支。
+
+---
+
+**分支名称**: \`$BRANCH_NAME\`
+**提交者**: @${{ github.actor }}"
+
+          # Create the PR
+          gh pr create \
+            --title "$PR_TITLE" \
+            --body "$PR_BODY" \
+            --base main \
+            --head "$BRANCH_NAME"
+          
+          echo "✅ PR created successfully for branch $BRANCH_NAME"
