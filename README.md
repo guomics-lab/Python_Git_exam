@@ -13,7 +13,7 @@ CI 会检查：
 - 基础提交信息规范（可选：本仓库版本不在 CI 中强制检查提交信息，但会在人工复核中查看）
 
 ## 二、任务要求（必须全部完成）
-1. **创建新分支**：从 `main` 创建分支，命名建议：`fix/pep8` 或 `task/pep8-fix`。
+1. **创建新分支**：从 `main` 创建分支，命名建议(请将user替换为实际的用户名)：`fix/user` 或 `task/user-fix`。
 2. **修复代码规范问题**：
    - 修复 `src/bad_style.py` 里的 PEP 8/可读性问题（命名、导入、空格、长行、文档字符串、异常、重复代码等）
    - 允许你拆分函数、增加辅助函数、增加类型注解、增加合理注释/Docstring
@@ -55,7 +55,7 @@ isort --check-only .
 4、推送并创建 PR：
 git add .
 git commit -m "fix: pep8 refactor"
-git push -u origin fix/pep8
+git push -u origin fix/user （请将user替换为实际的用户名）
 PR 页面等待 GitHub Actions 执行，看到 grading-ci / grade (lint + format + tests) 为绿色即通过。
 
 ```
