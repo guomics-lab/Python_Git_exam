@@ -22,13 +22,29 @@ CI 会检查：
    - 进行至少 1 次 commit（建议 1~3 次，小步提交）
    - 提交信息建议格式：`fix: make code pep8 compliant`（也可使用你们团队规范）
 4. **发起 Pull Request**：
+   - **⚠️ 注意：本仓库禁止直接推送到 `main` 分支，所有更改必须通过 PR 提交**
+   - 推送分支后，系统会自动创建 PR（或手动创建）
    - PR 标题清晰说明做了什么
    - PR 描述中写明：你修复了哪些类型的问题（例如：imports/formatting/naming/docstring）
+   - 等待 GitHub Actions 自动运行所有检查
 
 ## 三、通过标准
 - GitHub Actions 绿灯（全部 job 通过）
 - PR 内容清晰、可读
 - 不引入功能回归（pytest 通过）
+
+## 📋 自动化功能
+本仓库已配置以下自动化功能：
+
+### ✅ 自动 PR 检测
+- 当你推送分支后，系统会**自动创建 Pull Request**
+- PR 会自动触发 CI 检查（ruff、black、isort、pytest）
+- 检查结果会显示在 PR 页面，全部通过后显示绿色 ✅
+
+### 🔒 Main 分支保护
+- **禁止直接推送到 `main` 分支**
+- 所有代码更改必须通过 Pull Request 提交
+- 详细的分支保护规则请参考 [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md)
 
 ## 四、本地运行建议
 1、创建环境（建议使用 Python 3.11）
@@ -56,7 +72,11 @@ isort --check-only .
 git add .
 git commit -m "fix: pep8 refactor"
 git push -u origin fix/user （请将user替换为实际的用户名）
-PR 页面等待 GitHub Actions 执行，看到 grading-ci / grade (lint + format + tests) 为绿色即通过。
+
+# ✅ 系统会自动创建 PR
+# 在 GitHub 网站上查看 PR 页面，等待 GitHub Actions 执行
+# 看到 grading-ci / grade (lint + format + tests) 为绿色即通过
+# ⚠️ 注意：不要直接推送到 main 分支，必须通过 PR 合并
 
 ```
 

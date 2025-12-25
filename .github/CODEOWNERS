@@ -1,0 +1,20 @@
+# CODEOWNERS file for the Python_Git_exam repository
+# 
+# This file defines individuals or teams that are responsible for code in this repository.
+# When a PR modifies files, the defined owners will be automatically requested for review.
+#
+# Pattern: path/to/files @username @org/team-name
+#
+# For exam purposes, all files should be reviewed before merging to main
+
+# Default owners for everything in the repo
+* @guomics-lab
+
+# Workflow files should be carefully reviewed
+/.github/workflows/ @guomics-lab
+
+# Source code requires review
+/src/ @guomics-lab
+
+# Tests require review
+/tests/ @guomics-lab

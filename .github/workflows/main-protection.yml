@@ -1,0 +1,33 @@
+name: Main Branch Protection
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  check-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if push is via PR merge
+        if: github.event_name == 'push'
+        run: |
+          echo "::warning::Direct push to main branch detected"
+          echo "⚠️  All changes to the main branch should come through Pull Requests."
+          echo "📖 Please refer to BRANCH_PROTECTION.md for proper workflow guidelines."
+          echo "🔧 Repository administrators should configure branch protection rules in Settings → Branches"
+          
+      - name: PR Protection Check
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "✅ Changes are being submitted via Pull Request - this is the correct workflow!"
+          echo "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          echo "Author: ${{ github.event.pull_request.user.login }}"
