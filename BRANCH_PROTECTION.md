@@ -70,7 +70,6 @@ git push origin main  # 这将被拒绝或触发保护警告
      - ✅ Require branches to be up to date before merging
      - 添加必需的检查：
        - `grade (lint + format + tests)` (来自 grading-ci.yml)
-       - `test-and-lint` (来自 ci.yml)
    - ✅ **Do not allow bypassing the above settings**
    - ⚠️ **Include administrators** (可选，但建议启用以确保规则一致性)
 

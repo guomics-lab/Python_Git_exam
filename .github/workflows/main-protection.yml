@@ -20,9 +20,10 @@ jobs:
       - name: Check if push is via PR merge
         if: github.event_name == 'push'
         run: |
-          echo "::notice::Direct push to main branch detected"
-          echo "This workflow monitors main branch activity."
-          echo "For this exam repository, all changes should come through Pull Requests."
+          echo "::warning::Direct push to main branch detected"
+          echo "⚠️  All changes to the main branch should come through Pull Requests."
+          echo "📖 Please refer to BRANCH_PROTECTION.md for proper workflow guidelines."
+          echo "🔧 Repository administrators should configure branch protection rules in Settings → Branches"
           
       - name: PR Protection Check
         if: github.event_name == 'pull_request'
